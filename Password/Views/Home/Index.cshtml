@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Password Checker";
+}
+
+
+<div class="row">
+    <div class="col-md-4" id="register">
+        <h2>Password Checker</h2>        
+        <p>Add points to the following items:</p>
+        <Ul><li>Minimum length is 1</li>
+            <li>If Password length is 5</li>
+            <li>If Password length is 12</li>
+            <li>No consecutive letters or numbers</li>
+            <li>With Uppercase Letters</li>
+            <li>With Lowercase Letters</li>
+            <li>With Numbers</li>
+            <li>With Symbols</li>
+            <li>No space</li>
+        </Ul>
+        <p>Enter your Password: <input type="password" id="myContent"></p>
+        <p>Score:<label id="myScore"></label></p>
+        <span id="result"></span>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var content = $('#myContent').val();
+
+            $('#myContent').keyup(function () {
+                if ($('#myContent').val() != content) {
+                    content = $('#myContent').val();
+                    $.ajax({
+                        type: 'GET',
+                        url: "http://localhost:49831/api/Password",
+                        datatype: 'JSON',
+                        data: { password: content },
+                        success: function (data) {
+                            $('#myScore').text(data);
+                            $("#result").text("");
+                            if (data == 0) {
+                                $('#myScore').text("");
+                                $("#result").text("");
+                            } else if (data == 1 || data == 2) {
+                                $("#result").text("Very weak");
+                            } else if (data == 3 || data == 4)  {
+                                $("#result").text("Weak");
+                            } else if (data == 5 || data == 6) {
+                                $("#result").text("Mediocre");
+                            } else if (data == 7 || data == 8) {
+                                $("#result").text("Average");
+                            } else if (data == 9 || data == 10){
+                                $("#result").text("Strong");
+                            }  else if (data == 12) {
+                                $("#result").text("Very Strong");
+                            } 
+                        }
+                    });
+                }
+            });
+        });
+
+    </script>
+}
